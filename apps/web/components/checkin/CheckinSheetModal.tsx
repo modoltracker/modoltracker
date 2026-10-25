@@ -135,13 +135,6 @@ export function CheckinSheetModal() {
   const handleConfirmCheckin = () => {
     setGpsError(null);
 
-    if (gpsAccuracyMeters && gpsAccuracyMeters > 300) {
-      setGpsError(
-        `Sinyal GPS kurang akurat (±${gpsAccuracyMeters}m). Klik 'Perbarui GPS' agar titik jejakmu akurat.`
-      );
-      return;
-    }
-
     let finalPlaceId: string | null = selectedExistingPlaceId;
 
     if (spotCategory === 'private_home') {

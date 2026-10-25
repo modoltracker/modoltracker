@@ -3,7 +3,15 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { User, At, LockKey, CheckCircle, WarningCircle } from '@phosphor-icons/react';
+import {
+  User,
+  At,
+  LockKey,
+  CheckCircle,
+  WarningCircle,
+  Eye,
+  EyeSlash,
+} from '@phosphor-icons/react';
 import {
   registerUsernameSchema,
   loginUsernameSchema,
@@ -32,6 +40,8 @@ function LoginContent() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -288,14 +298,26 @@ function LoginContent() {
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"
                 />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 6 karakter"
-                  className="w-full h-12 pl-10 pr-4 rounded-md bg-sand border-2 border-line text-sm font-bold text-ink placeholder:text-ink-faint focus:outline-none focus:border-splash focus:bg-paper"
+                  className="w-full h-12 pl-10 pr-11 rounded-md bg-sand border-2 border-line text-sm font-bold text-ink placeholder:text-ink-faint focus:outline-none focus:border-splash focus:bg-paper"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft hover:text-ink p-1"
+                >
+                  {showPassword ? (
+                    <EyeSlash size={18} weight="bold" />
+                  ) : (
+                    <Eye size={18} weight="bold" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -310,14 +332,30 @@ function LoginContent() {
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"
                 />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   required
                   minLength={6}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ketik ulang password kamu"
-                  className="w-full h-12 pl-10 pr-4 rounded-md bg-sand border-2 border-line text-sm font-bold text-ink placeholder:text-ink-faint focus:outline-none focus:border-splash focus:bg-paper"
+                  className="w-full h-12 pl-10 pr-11 rounded-md bg-sand border-2 border-line text-sm font-bold text-ink placeholder:text-ink-faint focus:outline-none focus:border-splash focus:bg-paper"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  aria-label={
+                    showConfirmPassword
+                      ? 'Sembunyikan konfirmasi password'
+                      : 'Lihat konfirmasi password'
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft hover:text-ink p-1"
+                >
+                  {showConfirmPassword ? (
+                    <EyeSlash size={18} weight="bold" />
+                  ) : (
+                    <Eye size={18} weight="bold" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -368,13 +406,25 @@ function LoginContent() {
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"
                 />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan password kamu"
-                  className="w-full h-12 pl-10 pr-4 rounded-md bg-sand border-2 border-line text-sm font-bold text-ink placeholder:text-ink-faint focus:outline-none focus:border-splash focus:bg-paper"
+                  className="w-full h-12 pl-10 pr-11 rounded-md bg-sand border-2 border-line text-sm font-bold text-ink placeholder:text-ink-faint focus:outline-none focus:border-splash focus:bg-paper"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft hover:text-ink p-1"
+                >
+                  {showPassword ? (
+                    <EyeSlash size={18} weight="bold" />
+                  ) : (
+                    <Eye size={18} weight="bold" />
+                  )}
+                </button>
               </div>
             </div>
 

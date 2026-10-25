@@ -2,8 +2,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
-  INITIAL_DEMO_PLACES,
-  fetchPlaces,
   getSupabaseClient,
   type PlaceRow,
   type CheckinRow,
@@ -23,7 +21,7 @@ export interface FriendItem {
   status: 'accepted' | 'pending';
 }
 
-export type GpsStatus = 'locating' | 'locked' | 'denied' | 'unsupported';
+export type GpsStatus = 'locating' | 'locked' | 'denied' | 'unsupported' | 'manual';
 
 export type ReactionEmoji = '💩' | '😂' | '🫡' | '🤢';
 
@@ -38,7 +36,9 @@ interface ModolStoreContextValue {
   userLocation: { lat: number; lng: number };
   gpsAccuracyMeters: number | null;
   gpsStatus: GpsStatus;
+  gpsRequestCount: number;
   refreshGpsLocation: () => void;
+  setManualUserLocation: (lat: number, lng: number) => void;
   username: string;
   displayName: string;
   activeTitle: string;
@@ -97,170 +97,30 @@ interface ModolStoreContextValue {
 
 const ModolStoreContext = createContext<ModolStoreContextValue | null>(null);
 
-const INITIAL_CHECKINS: CheckinRow[] = [
-  {
-    id: 'chk-1',
-    user_id: 'demo-user',
-    place_id: '11111111-1111-4111-8111-111111111101',
-    lat: -6.2245,
-    lng: 106.8294,
-    city: 'Jakarta Selatan',
-    province: 'DKI Jakarta',
-    visibility: 'friends',
-    note: 'Penyelamat pagi hari sebelum macet Kuningan! Air kenceng.',
-    in_private_zone: false,
-    visible_at: '2026-10-24T08:00:00Z',
-    created_at: '2026-10-24T06:00:00Z',
-  },
-  {
-    id: 'chk-2',
-    user_id: 'demo-user',
-    place_id: '11111111-1111-4111-8111-111111111105',
-    lat: -6.3641,
-    lng: 107.3389,
-    city: 'Karawang',
-    province: 'Jawa Barat',
-    visibility: 'public',
-    note: 'Rest Area KM 57 selalu kinclong walau ramai.',
-    in_private_zone: false,
-    visible_at: '2026-10-20T12:00:00Z',
-    created_at: '2026-10-20T10:00:00Z',
-  },
-  {
-    id: 'chk-3',
-    user_id: 'demo-user',
-    place_id: '11111111-1111-4111-8111-111111111103',
-    lat: -6.1952,
-    lng: 106.8213,
-    city: 'Jakarta Pusat',
-    province: 'DKI Jakarta',
-    visibility: 'friends',
-    note: 'Toilet Sultan, wangi banget!',
-    in_private_zone: false,
-    visible_at: '2026-10-18T15:00:00Z',
-    created_at: '2026-10-18T13:00:00Z',
-  },
-  {
-    id: 'chk-friend-1',
-    user_id: 'friend-1',
-    place_id: '11111111-1111-4111-8111-111111111102',
-    lat: -6.2351,
-    lng: 106.7992,
-    city: 'Jakarta Selatan',
-    province: 'DKI Jakarta',
-    visibility: 'friends',
-    note: 'Mampir buang hajat di Masjid Al-Azhar habis macet-macetan, lega pol!',
-    in_private_zone: false,
-    visible_at: '2026-10-25T10:00:00Z',
-    created_at: '2026-10-25T08:00:00Z',
-  },
-  {
-    id: 'chk-friend-2',
-    user_id: 'friend-2',
-    place_id: '11111111-1111-4111-8111-111111111104',
-    lat: -6.1767,
-    lng: 106.8306,
-    city: 'Jakarta Pusat',
-    province: 'DKI Jakarta',
-    visibility: 'friends',
-    note: 'Numpang modol di Indomaret Gambir pas nunggu orderan ojol 😂',
-    in_private_zone: false,
-    visible_at: '2026-10-25T06:00:00Z',
-    created_at: '2026-10-25T04:00:00Z',
-  },
-];
-
-const INITIAL_REVIEWS: ReviewRow[] = [
-  {
-    id: 'rev-1',
-    user_id: 'demo-user',
-    place_id: '11111111-1111-4111-8111-111111111101',
-    checkin_id: 'chk-1',
-    rating_cleanliness: 5,
-    rating_water: 5,
-    rating_privacy: 4,
-    rating_smell: 5,
-    rating_supplies: 4,
-    overall_rating: 4.6,
-    body: 'Kamar mandi SPBU paling terawat di Rasuna Said. Ada sabun, jet washer kencang, dan mushola di sebelahnya.',
-    is_location_verified: true,
-    created_at: '2026-10-24T06:05:00Z',
-    updated_at: '2026-10-24T06:05:00Z',
-  },
-  {
-    id: 'rev-2',
-    user_id: 'friend-1',
-    place_id: '11111111-1111-4111-8111-111111111102',
-    checkin_id: null,
-    rating_cleanliness: 5,
-    rating_water: 5,
-    rating_privacy: 5,
-    rating_smell: 5,
-    rating_supplies: 4,
-    overall_rating: 4.8,
-    body: 'Airnya melimpah ruah dan adem banget. Kotak infaq di depan pintu.',
-    is_location_verified: true,
-    created_at: '2026-10-22T09:15:00Z',
-    updated_at: '2026-10-22T09:15:00Z',
-  },
-];
-
-const INITIAL_FRIENDS: FriendItem[] = [
-  {
-    id: 'friend-1',
-    username: 'rizky_petualang',
-    display_name: 'Rizky Pratama',
-    title: 'Penjelajah SPBU',
-    last_city: 'Bandung',
-    last_time: '3 jam lalu',
-    total_checkins: 34,
-    status: 'accepted',
-  },
-  {
-    id: 'friend-2',
-    username: 'sari_ojol',
-    display_name: 'Sari Wulandari',
-    title: 'Ratu Toilet Gratis',
-    last_city: 'Jakarta Selatan',
-    last_time: 'Kemarin',
-    total_checkins: 51,
-    status: 'accepted',
-  },
-  {
-    id: 'friend-3',
-    username: 'budi_santoso',
-    display_name: 'Budi Santoso',
-    title: 'Sultan Toilet Mall',
-    last_city: 'Semarang',
-    last_time: '2 hari lalu',
-    total_checkins: 19,
-    status: 'pending',
-  },
-];
-
 export function ModolStoreProvider({ children }: { children: React.ReactNode }) {
-  const [places, setPlaces] = useState<PlaceRow[]>(INITIAL_DEMO_PLACES);
-  const [checkins, setCheckins] = useState<CheckinRow[]>(INITIAL_CHECKINS);
-  const [reviews, setReviews] = useState<ReviewRow[]>(INITIAL_REVIEWS);
-  const [friends, setFriends] = useState<FriendItem[]>(INITIAL_FRIENDS);
-  const [reactions, setReactions] = useState<Record<string, Record<ReactionEmoji, number>>>({
-    'chk-1': { '💩': 4, '😂': 2, '🫡': 3, '🤢': 0 },
-    'chk-friend-1': { '💩': 6, '😂': 5, '🫡': 2, '🤢': 0 },
-    'chk-friend-2': { '💩': 3, '😂': 8, '🫡': 1, '🤢': 1 },
-  });
+  // Mulai dari 0 (kosong bersih) tanpa titik dummy!
+  const [places, setPlaces] = useState<PlaceRow[]>([]);
+  const [checkins, setCheckins] = useState<CheckinRow[]>([]);
+  const [reviews, setReviews] = useState<ReviewRow[]>([]);
+  const [friends, setFriends] = useState<FriendItem[]>([]);
+  const [reactions, setReactions] = useState<Record<string, Record<ReactionEmoji, number>>>({});
   const [myReactions, setMyReactions] = useState<Record<string, ReactionEmoji | undefined>>({});
+
   const [authUserId, setAuthUserId] = useState<string | null>(null);
-  const [authUsername, setAuthUsername] = useState<string>('pejuang_kebelet');
-  const [authDisplayName, setAuthDisplayName] = useState<string>('Andi Pratama');
+  const [authUsername, setAuthUsername] = useState<string>('pejuang_modol');
+  const [authDisplayName, setAuthDisplayName] = useState<string>('Pejuang Modol');
   const [hasLinkedEmail, setHasLinkedEmail] = useState<boolean>(false);
   const [linkedEmailAddress, setLinkedEmailAddress] = useState<string | null>(null);
   const [showEmailLinkReminder, setShowEmailLinkReminder] = useState<boolean>(false);
+
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({
-    lat: -6.2245,
-    lng: 106.8294,
+    lat: -6.2088,
+    lng: 106.8456,
   });
   const [gpsAccuracyMeters, setGpsAccuracyMeters] = useState<number | null>(null);
   const [gpsStatus, setGpsStatus] = useState<GpsStatus>('locating');
+  const [gpsRequestCount, setGpsRequestCount] = useState<number>(0);
+
   const [defaultVisibility, setDefaultVisibility] = useState<Visibility>('friends');
   const [feedDelayHours, setFeedDelayHours] = useState<number>(2);
   const [privateZoneRadius, setPrivateZoneRadius] = useState<number>(500);
@@ -281,50 +141,32 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
         });
         setGpsAccuracyMeters(Math.round(pos.coords.accuracy));
         setGpsStatus('locked');
+        setGpsRequestCount((c) => c + 1);
       },
       () => {
         setGpsStatus('denied');
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0, // Larang pakai lokasi cache lama!
+        timeout: 15000,
+        maximumAge: 0,
       }
     );
   }, []);
 
+  const setManualUserLocation = React.useCallback((lat: number, lng: number) => {
+    setUserLocation({ lat, lng });
+    setGpsAccuracyMeters(5);
+    setGpsStatus('manual');
+    setGpsRequestCount((c) => c + 1);
+  }, []);
+
   useEffect(() => {
     refreshGpsLocation();
-    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          setUserLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-          setGpsAccuracyMeters(Math.round(pos.coords.accuracy));
-          setGpsStatus('locked');
-        },
-        () => {
-          // pertahankan state terakhir jika watch gagal sementara
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 0,
-        }
-      );
-      return () => navigator.geolocation.clearWatch(watchId);
-    }
-    return undefined;
   }, [refreshGpsLocation]);
 
+  // Ambil data asli milik user yang sedang login dari Supabase
   useEffect(() => {
-    fetchPlaces().then((remote) => {
-      if (remote && remote.length > 0) {
-        setPlaces(remote);
-      }
-    });
-
     const sb = getSupabaseClient();
     if (!sb) return;
 
@@ -340,6 +182,11 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
         if (isInternalEmail) {
           setShowEmailLinkReminder(true);
         }
+
+        const meta = user.user_metadata;
+        if (meta?.username) setAuthUsername(meta.username);
+        if (meta?.display_name) setAuthDisplayName(meta.display_name);
+
         const { data: prof } = await sb
           .from('profiles')
           .select('username, display_name')
@@ -350,12 +197,40 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
           setAuthUsername(p.username);
           if (p.display_name) setAuthDisplayName(p.display_name);
         }
+
+        // Load checkins milik user tersebut dari Supabase
+        const { data: userCheckins } = await sb
+          .from('checkins')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (userCheckins && userCheckins.length > 0) {
+          setCheckins(userCheckins as CheckinRow[]);
+
+          const placeIds = Array.from(
+            new Set(
+              (userCheckins as CheckinRow[])
+                .map((c) => c.place_id)
+                .filter((id): id is string => Boolean(id))
+            )
+          );
+          if (placeIds.length > 0) {
+            const { data: placeRows } = await sb
+              .from('places')
+              .select('*')
+              .in('id', placeIds);
+            if (placeRows) {
+              setPlaces(placeRows as PlaceRow[]);
+            }
+          }
+        }
       }
     });
   }, []);
 
   const openCheckinSheet = (place?: PlaceRow | null) => {
-    setSelectedPlaceForCheckin(place ?? places[0] ?? null);
+    setSelectedPlaceForCheckin(place ?? null);
     setIsCheckinSheetOpen(true);
   };
 
@@ -366,12 +241,12 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
   const addCheckin: ModolStoreContextValue['addCheckin'] = (input) => {
     const newCheckin: CheckinRow = {
       id: `chk-${Date.now()}`,
-      user_id: authUserId ?? 'demo-user',
+      user_id: authUserId ?? 'current-user',
       place_id: input.place_id,
       lat: input.lat,
       lng: input.lng,
-      city: input.city ?? 'Jakarta Selatan',
-      province: 'DKI Jakarta',
+      city: input.city ?? 'Lokasi GPS',
+      province: 'Indonesia',
       visibility: input.visibility,
       note: input.note ?? null,
       in_private_zone: input.place_id === null,
@@ -395,7 +270,7 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
           place_id: input.place_id,
           lat: input.lat,
           lng: input.lng,
-          city: input.city ?? 'Jakarta Selatan',
+          city: input.city ?? 'Lokasi GPS',
           visibility: input.visibility,
           note: input.note ?? null,
         } as never)
@@ -413,7 +288,7 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
     });
     const newReview: ReviewRow = {
       id: `rev-${Date.now()}`,
-      user_id: 'demo-user',
+      user_id: authUserId ?? 'current-user',
       place_id: input.place_id,
       checkin_id: input.checkin_id ?? null,
       rating_cleanliness: input.rating_cleanliness,
@@ -445,6 +320,7 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
         };
       })
     );
+
     const sb = getSupabaseClient();
     if (sb && authUserId) {
       sb.from('reviews')
@@ -476,8 +352,8 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
       lat: userLocation.lat,
       lng: userLocation.lng,
       address: input.address,
-      city: input.city || 'Jakarta Selatan',
-      province: 'DKI Jakarta',
+      city: input.city || 'Lokasi GPS',
+      province: 'Indonesia',
       status: 'unverified',
       source: 'user',
       osm_id: null,
@@ -504,7 +380,7 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
       checkin_count: 1,
       claimed_by: null,
       is_verified_clean: false,
-      created_by: authUserId ?? 'demo-user',
+      created_by: authUserId ?? 'current-user',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -584,6 +460,11 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
     if (identity.userId !== undefined) setAuthUserId(identity.userId);
     setAuthUsername(identity.username);
     setAuthDisplayName(identity.displayName);
+    // Saat daftar akun baru, mulai dengan jejak kosong bersih (0 titik)
+    setCheckins([]);
+    setPlaces([]);
+    setReviews([]);
+    setFriends([]);
     const linked = Boolean(identity.hasLinkedEmail);
     setHasLinkedEmail(linked);
     setShowEmailLinkReminder(!linked);
@@ -612,10 +493,12 @@ export function ModolStoreProvider({ children }: { children: React.ReactNode }) 
         userLocation,
         gpsAccuracyMeters,
         gpsStatus,
+        gpsRequestCount,
         refreshGpsLocation,
+        setManualUserLocation,
         username: authUsername,
         displayName: authDisplayName,
-        activeTitle: 'Raja SPBU',
+        activeTitle: 'Pejuang Baru',
         hasLinkedEmail,
         linkedEmailAddress,
         showEmailLinkReminder,
