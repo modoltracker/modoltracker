@@ -16,7 +16,13 @@
     "turbo": "^2.4.0",
     "typescript": "^5.8.2"
   },
-  "packageManager": "pnpm@12.15.0",
+  "packageManager": "pnpm@9.15.4",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  },
   "engines": {
     "node": ">=20.0.0"
   }
