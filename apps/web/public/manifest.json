@@ -1,0 +1,10 @@
+{
+  "name": "Modoltracker — Direktori & Tracker Toilet Indonesia",
+  "short_name": "Modoltracker",
+  "description": "Temukan toilet terbaik, catat setiap perjalananmu.",
+  "start_url": "/map",
+  "display": "standalone",
+  "background_color": "#FFF8EC",
+  "theme_color": "#FFC800",
+  "orientation": "portrait"
+}

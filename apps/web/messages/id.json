@@ -1,0 +1,128 @@
+{
+  "app": {
+    "name": "modoltracker",
+    "tagline": "Temukan toilet terbaik, catat setiap perjalananmu.",
+    "fun_tagline": "Jejak modolmu, panduan toilet semua orang.",
+    "coming_soon_title": "Segera Hadir!",
+    "coming_soon_desc": "Si Modi lagi ngerakit fitur ini biar makin seru. Tunggu di fase berikutnya ya!"
+  },
+  "nav": {
+    "map": "Peta",
+    "friends": "Teman",
+    "checkin_fab": "Modol di sini!",
+    "badges": "Pencapaian",
+    "profile": "Profil"
+  },
+  "map": {
+    "search_placeholder": "Cari toilet SPBU, masjid, mall...",
+    "filter_all": "Semua",
+    "filter_free": "Gratis",
+    "filter_24h": "24 Jam",
+    "filter_top": "Rating 4+",
+    "nearby_header": "toilet dekat kamu",
+    "add_place_cta": "Tambah Toilet Baru",
+    "my_location": "Lokasi Saya",
+    "empty_search": "Waduh, toilet yang kamu cari belum ketemu. Tambahin yuk!",
+    "navigate": "Navigasi",
+    "checkin_here": "Modol di sini!"
+  },
+  "categories": {
+    "gas_station": "SPBU",
+    "minimarket": "Minimarket",
+    "mosque": "Masjid / Mushola",
+    "mall": "Mall",
+    "rest_area": "Rest Area",
+    "restaurant": "Restoran",
+    "cafe": "Kafe",
+    "public_toilet": "Toilet Umum",
+    "office": "Kantor",
+    "hospital": "Rumah Sakit",
+    "station": "Stasiun",
+    "airport": "Bandara",
+    "campus": "Kampus",
+    "other": "Lainnya"
+  },
+  "facilities": {
+    "has_squat": "Jongkok",
+    "has_sitting": "Duduk",
+    "has_jet_washer": "Jet Washer",
+    "has_bucket": "Gayung",
+    "has_tissue": "Tisu",
+    "has_soap": "Sabun",
+    "has_sink": "Wastafel",
+    "is_accessible": "Disabilitas",
+    "has_baby_change": "Ganti Popok",
+    "has_shower": "Bisa Mandi",
+    "has_prayer_room": "Mushola",
+    "gender_separated": "Pria/Wanita Pisah"
+  },
+  "fees": {
+    "free": "Gratis",
+    "paid": "Berbayar",
+    "donation": "Seikhlasnya",
+    "unknown": "Tarif belum ada"
+  },
+  "visibility": {
+    "public": "Publik",
+    "friends": "Teman",
+    "private": "Pribadi"
+  },
+  "checkin": {
+    "title": "Catat Jejak Modol",
+    "subtitle": "Pilih toilet terdekat atau catat sebagai lokasi pribadi",
+    "private_home_option": "Lokasi Pribadi / Rumah (Disembunyikan dari peta publik)",
+    "note_placeholder": "Catatan singkat... (mis. Airnya kenceng banget!)",
+    "visibility_label": "Siapa yang boleh lihat?",
+    "submit_cta": "MODOL DI SINI!",
+    "success_title": "Lega ya! 😌",
+    "success_desc": "Jejakmu sudah tercatat rapi di peta perjalananmu.",
+    "prompt_review_cta": "KASIH ULASAN TOILET (+10 XP)",
+    "skip_review_cta": "Nanti aja, mau lanjut jalan"
+  },
+  "review": {
+    "quiz_step_cleanliness": "Seberapa bersih toiletnya?",
+    "quiz_step_water": "Gimana aliran air & gayung/semprotannya?",
+    "quiz_step_smell": "Kondisi aromanya gimana?",
+    "quiz_step_facilities": "Fasilitas apa aja yang tersedia?",
+    "body_placeholder": "Tulis tips buat pejuang kebelet berikutnya (opsional)...",
+    "submit_cta": "KIRIM ULASAN!",
+    "verified_badge": "Di lokasi",
+    "verified_clean": "Bersih Terverifikasi"
+  },
+  "rating": {
+    "level_1": "Parah 😵",
+    "level_2": "Kurang",
+    "level_3": "Lumayan",
+    "level_4": "Bersih!",
+    "level_5": "Kinclong ✨"
+  },
+  "profile": {
+    "title": "Jejak Modolku",
+    "default_title_badge": "Raja SPBU",
+    "stat_checkins": "CHECK-IN",
+    "stat_places": "TEMPAT UNIK",
+    "stat_cities": "KOTA",
+    "trail_map_title": "Peta Jejak Pribadi",
+    "recent_history": "Riwayat Check-in Terakhir",
+    "empty_history": "Belum ada jejak. Petualangan modolmu dimulai dari sini!"
+  },
+  "friends": {
+    "title": "Teman Seperjuangan",
+    "tab_list": "Teman",
+    "tab_requests": "Permintaan",
+    "tab_search": "Cari",
+    "search_placeholder": "Ketik username temanmu...",
+    "empty_friends": "Modol sendirian itu sepi. Ajak temanmu!",
+    "view_trail": "Lihat Jejak",
+    "accept_cta": "Terima"
+  },
+  "settings": {
+    "title": "Pengaturan & Privasi",
+    "privacy_section": "Keamanan Lokasi (Anti-Tracking)",
+    "default_visibility_label": "Default Visibility Check-in",
+    "feed_delay_label": "Jeda Kemunculan di Teman (Jam)",
+    "private_zone_title": "Zona Privat (Area Rumah / Kantor)",
+    "private_zone_desc": "Check-in dalam radius 500m dari titik ini otomatis dikunci menjadi Pribadi dan tidak pernah dibagikan ke siapa pun.",
+    "save_cta": "SIMPAN PENGATURAN"
+  }
+}
